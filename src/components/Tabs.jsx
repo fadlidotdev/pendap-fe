@@ -15,7 +15,7 @@ export default function Tabs({ tabs, value, defaultValue, onChange }) {
               current
                 ? "bg-indigo-100 text-indigo-700"
                 : "text-gray-500 hover:text-gray-700",
-              "rounded-md px-3 py-2 text-sm font-medium"
+              "rounded-md p-2 text-sm font-medium h-10"
             )}
             onClick={() => onChange(tab.value)}
           >

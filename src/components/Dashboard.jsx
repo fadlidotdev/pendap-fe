@@ -344,7 +344,7 @@ export default function Dashboard({ onSignOut }) {
                         sudahDibaca:
                           selectedTab === "all"
                             ? faker.datatype.boolean()
-                            : true,
+                            : false,
                         nama: faker.person.fullName(),
                         perihal: faker.lorem.paragraph(3),
                       }}
