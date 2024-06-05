@@ -8,16 +8,27 @@ import {
 } from "@headlessui/react";
 import {
   ExclamationTriangleIcon,
+  QuestionMarkCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { classNames } from "../lib/utils";
 
 export default function ConfirmDialog({
   open,
+  type,
   title,
   description,
   onConfirm,
   onClose,
 }) {
+  let typeClassNames = "";
+
+  if (type === "question") {
+    typeClassNames = 'bg-orange-100'
+  } else if (type === 'delete') {
+    typeClassNames = 'bg-red-100'
+  }
+  
   return (
     <Transition show={open}>
       <Dialog className="relative z-50" onClose={onClose}>
@@ -54,11 +65,24 @@ export default function ConfirmDialog({
                   </button>
                 </div>
                 <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <ExclamationTriangleIcon
-                      className="h-6 w-6 text-red-600"
-                      aria-hidden="true"
-                    />
+                  <div
+                    className={classNames(
+                      "mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10 " + typeClassNames
+                    )}
+                  >
+                    {type === "question" && (
+                      <QuestionMarkCircleIcon
+                        className="h-6 w-6 text-yellow-600"
+                        aria-hidden="true"
+                      />
+                    )}
+
+                    {type === "delete" && (
+                      <ExclamationTriangleIcon
+                        className="h-6 w-6 text-red-600"
+                        aria-hidden="true"
+                      />
+                    )}
                   </div>
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                     <DialogTitle
@@ -73,13 +97,26 @@ export default function ConfirmDialog({
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                    onClick={onConfirm}
-                  >
-                    Ya, hapus
-                  </button>
+                  {type === "question" && (
+                    <button
+                      type="button"
+                      className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
+                      onClick={onConfirm}
+                    >
+                      Ya
+                    </button>
+                  )}
+
+                  {type === "delete" && (
+                    <button
+                      type="button"
+                      className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                      onClick={onConfirm}
+                    >
+                      Ya, hapus
+                    </button>
+                  )}
+
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"

@@ -12,13 +12,18 @@ import {
 } from "@heroicons/react/20/solid";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { classNames } from "../lib/utils";
+import Notifications from "./Notifications";
 
 const userNavigation = [
   { name: "Akun", href: "#", action: "profile" },
   { name: "Keluar", href: "#", action: "logout" },
 ];
 
-export default function NavHeader({ onSignOut, onOpenSidebar }) {
+export default function NavHeader({
+  onSignOut,
+  onOpenSidebar,
+  onClickNotification,
+}) {
   return (
     <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
       <button
@@ -51,6 +56,8 @@ export default function NavHeader({ onSignOut, onOpenSidebar }) {
           />
         </form>
         <div className="flex items-center gap-x-4 lg:gap-x-6">
+          <Notifications onClick={onClickNotification} />
+
           {/* Separator */}
           <div
             className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"

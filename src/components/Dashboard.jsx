@@ -131,8 +131,8 @@ export default function Dashboard({ onSignOut }) {
                     <div className="flex h-20 shrink-0 items-center gap-3">
                       <img
                         className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=white"
-                        alt="Your Company"
+                        src="/logo.png"
+                        alt="Kejaksaan Negeri"
                       />
 
                       <div className="flex flex-col">
@@ -208,8 +208,8 @@ export default function Dashboard({ onSignOut }) {
             <div className="flex h-24 shrink-0 items-center gap-3">
               <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=white"
-                alt="Your Company"
+                src="/logo.png"
+                alt="Kejaksaan Negeri"
               />
               <div className="flex flex-col">
                 <h1 className="tracking-widest text-white font-bold text-xl">
@@ -293,6 +293,7 @@ export default function Dashboard({ onSignOut }) {
         <div className="lg:pl-72">
           <NavHeader
             onSignOut={onSignOut}
+            onClickNotification={() => setView("detail")}
             onOpenSidebar={() => setSidebarOpen(true)}
           />
 

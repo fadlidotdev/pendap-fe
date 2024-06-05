@@ -1,7 +1,9 @@
 import {
   ArchiveBoxIcon,
+  ArrowUturnRightIcon,
   PaperClipIcon,
   TrashIcon,
+  EnvelopeOpenIcon,
 } from "@heroicons/react/20/solid";
 import Breadcrumbs from "./Breadcrumbs";
 import Drawer from "./Drawer";
@@ -13,9 +15,15 @@ import { createPortal } from "react-dom";
 export default function LetterDetail() {
   const [openPdf, setOpenPdf] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openForward, setOpenForward] = useState(false);
+  const [openHasRead, setOpenHasRead] = useState(false);
+  const [openReply, setOpenReply] = useState(false);
 
   const [showDeleted, setShowDeleted] = useState(false);
+  const [showForwarded, setShowForwarded] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  const [showHasRead, setShowHasRead] = useState(false);
+  const [showReplied, setShowReplied] = useState(false);
 
   useEffect(() => {
     let timeout;
@@ -28,6 +36,18 @@ export default function LetterDetail() {
 
     return () => clearTimeout(timeout);
   }, [showDeleted]);
+
+  useEffect(() => {
+    let timeout;
+
+    if (showForwarded) {
+      timeout = setTimeout(() => {
+        setShowForwarded(false);
+      }, 3000);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [showForwarded]);
 
   useEffect(() => {
     let timeout;
@@ -53,7 +73,7 @@ export default function LetterDetail() {
       </div>
 
       <div className="space-y-4">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-end">
           <header>
             <h2 className="text-xl lg:text-2xl font-bold leading-tight tracking-tight text-gray-900">
               Pengaduan Masyarakat Terkait Hukum Perdata
@@ -63,7 +83,7 @@ export default function LetterDetail() {
             </div>
           </header>
 
-          <div className="flex items-center">
+          <div className="flex items-center relative top-2">
             <button
               type="button"
               title="Arsipkan"
@@ -73,7 +93,17 @@ export default function LetterDetail() {
               }}
             >
               <span className="sr-only">Arsip</span>
-              <ArchiveBoxIcon className="h-5 w-5" aria-hidden="true" />
+              <ArchiveBoxIcon className="h-4 w-4" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              title="Hapus"
+              className="flex items-center justify-center bg-white p-2.5 text-gray-300 hover:text-red-400"
+              onClick={() => setOpenDelete(true)}
+            >
+              <span className="sr-only">Hapus</span>
+              <TrashIcon className="h-4 w-4" aria-hidden="true" />
             </button>
 
             <span
@@ -83,12 +113,26 @@ export default function LetterDetail() {
 
             <button
               type="button"
-              title="Hapus"
-              className="flex items-center justify-center bg-white p-2.5 text-gray-300 hover:text-red-400"
-              onClick={() => setOpenDelete(true)}
+              title="Teruskan"
+              className="flex items-center justify-center bg-white p-2.5 text-gray-300 hover:text-gray-400"
+              onClick={() => {
+                setOpenForward(true);
+              }}
             >
-              <span className="sr-only">Hapus</span>
-              <TrashIcon className="h-5 w-5" aria-hidden="true" />
+              <span className="sr-only">Teruskan</span>
+              <ArrowUturnRightIcon className="h-4 w-4" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              title="Tandai sudah dibaca"
+              className="flex items-center justify-center bg-white p-2.5 text-gray-300 hover:text-gray-400"
+              onClick={() => {
+                setOpenHasRead(true);
+              }}
+            >
+              <span className="sr-only">Tandai sudah dibaca</span>
+              <EnvelopeOpenIcon className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -177,6 +221,36 @@ export default function LetterDetail() {
         </div>
       </div>
 
+      <form
+        action="#"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setOpenReply(true);
+        }}
+      >
+        <label htmlFor="comment" className="sr-only">
+          Instruksi balasan
+        </label>
+        <div>
+          <textarea
+            rows={5}
+            name="comment"
+            id="comment"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            placeholder="Instruksi tindak lanjut..."
+            defaultValue={""}
+          />
+        </div>
+        <div className="mt-2 flex justify-end">
+          <button
+            type="submit"
+            className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Kirim
+          </button>
+        </div>
+      </form>
+
       <Drawer
         open={openPdf}
         onClose={() => setOpenPdf(false)}
@@ -200,11 +274,48 @@ export default function LetterDetail() {
       <ConfirmDialog
         open={openDelete}
         title="Hapus Surat"
+        type="delete"
         description="Apakah anda yakin ingin menghapus surat ini?"
         onClose={() => setOpenDelete(false)}
         onConfirm={() => {
           setOpenDelete(false);
           setShowDeleted(true);
+        }}
+      />
+
+      <ConfirmDialog
+        open={openForward}
+        title="Teruskan Surat"
+        type="question"
+        description="Apakah anda yakin ingin meneruskan surat ini ke Pimpinan?"
+        onClose={() => setOpenForward(false)}
+        onConfirm={() => {
+          setOpenForward(false);
+          setShowForwarded(true);
+        }}
+      />
+
+      <ConfirmDialog
+        open={openHasRead}
+        title="Tandai surat 'sudah dibaca'"
+        type="question"
+        description="Apakah anda yakin ingin menandai surat 'sudah dibaca' dan mengirimkan notifikasi kepada pengirim?"
+        onClose={() => setOpenHasRead(false)}
+        onConfirm={() => {
+          setOpenHasRead(false);
+          setShowHasRead(true);
+        }}
+      />
+
+      <ConfirmDialog
+        open={openReply}
+        title="Kirimkan instruksi kepada Admin"
+        type="question"
+        description="Apakah anda yakin ingin mengirim instruksi tindak lanjut surat kepada Admin?"
+        onClose={() => setOpenReply(false)}
+        onConfirm={() => {
+          setOpenReply(false);
+          setShowReplied(true);
         }}
       />
 
@@ -220,10 +331,40 @@ export default function LetterDetail() {
 
       {createPortal(
         <Notification
+          show={showForwarded}
+          onDismiss={() => setShowForwarded(false)}
+          type="success"
+          message="Surat berhasil diteruskan"
+        />,
+        document.body
+      )}
+
+      {createPortal(
+        <Notification
           show={showArchived}
           onDismiss={() => setShowArchived(false)}
           type="success"
           message="Surat berhasil diarsip"
+        />,
+        document.body
+      )}
+
+      {createPortal(
+        <Notification
+          show={showHasRead}
+          onDismiss={() => setShowHasRead(false)}
+          type="success"
+          message="Surat ditandai 'sudah dibaca' dan akan dikirimkan notifikasi kepada pengirim"
+        />,
+        document.body
+      )}
+
+      {createPortal(
+        <Notification
+          show={showReplied}
+          onDismiss={() => setShowReplied(false)}
+          type="success"
+          message="Instruksi tindak lanjut surat berhasil dikirimkan kepada Admin"
         />,
         document.body
       )}
